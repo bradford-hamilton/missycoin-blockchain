@@ -1,3 +1,5 @@
+var crypto = require('crypto');
+
 class Blockchain {
   constructor() {
     this.chain = [];
@@ -37,7 +39,7 @@ class Blockchain {
 
   hash(block) {
     const blockString = JSON.stringify(block);
-    const hash = crypto.createHmac(process.env.HASH_TYPE, process.env.CRYPTO_SECRET)
+    const hash = crypto.createHmac(process.env.HASH_TYPE, process.env.KEY)
       .update(blockString)
       .digest('hex');
 
@@ -45,15 +47,16 @@ class Blockchain {
   }
 
   lastBlock() {
-    return this.chain.slice(-1)[0];
+    const lastBlock = this.chain.length > 0 ? this.chain.slice(-1)[0] : { index: 0 };
+    return lastBlock;
   }
 
   validProof(lastProof, proof) {
-    const guessHash = crypto.createHmac(process.env.HASH_TYPE, process.env.CRYPTO_SECRET)
+    const guessHash = crypto.createHmac(process.env.HASH_TYPE, process.env.KEY)
       .update(`${lastProof}${proof}`)
       .digest('hex');
 
-    return guessHash.subString(0, 5) === process.env.RESOLUTION_HASH
+    return guessHash.subString(0, 5) === process.env.RESOLUTION_HASH;
   }
 
   proofOfWork(lastProof) {

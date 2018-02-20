@@ -11,7 +11,7 @@ class MissyCoin {
 
   getChain(req, res, next) {
     req.responseValue = {
-      message: 'Get chain',
+      message: 'all the things',
       chain: this.blockchain.chain,
     }
 
